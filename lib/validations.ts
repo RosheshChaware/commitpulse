@@ -171,7 +171,7 @@ export const streakParamsSchema = z.object({
     ),
   refresh: z.string().optional().transform(toRefreshFlag),
   hide_title: z.string().optional().transform(toBooleanFlag),
-  hide_background: z.string().optional().transform(toRefreshFlag),
+  hide_background: z.string().optional().transform(toBooleanFlag),
   hide_stats: z.string().optional().transform(toBooleanFlag),
   lang: z.string().optional().default('en'),
   // Unknown view values fall back to the default dashboard view.
