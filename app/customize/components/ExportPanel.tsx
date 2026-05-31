@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 import type { ReactElement } from 'react';
 import type { ExportFormat } from '../types';
 import { getPlaceholderSnippet } from '../utils';
@@ -115,7 +114,7 @@ export function ExportPanel({
       URL.revokeObjectURL(downloadUrl);
     } catch (error) {
       console.error('Failed to download custom vector badge image asset:', error);
-      toast.error('Failed to download badge. Please try again.');
+      alert('Failed to download the badge asset directly from the server pipeline.');
     } finally {
       setIsDownloading(false);
     }
