@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type ReactElement } from 'rea
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ControlsPanel } from './components/ControlsPanel';
+import { AdvancedSettingsPanel } from './components/AdvancedSettingsPanel';
 import { ExportPanel } from './components/ExportPanel';
 import InteractiveViewer from '@/components/InteractiveViewer';
 import DOMPurify from 'dompurify';
@@ -149,6 +150,32 @@ export default function CustomizePage(): ReactElement {
         // - Use a conservative URI whitelist to prevent javascript: URIs
         const sanitized = DOMPurify.sanitize(text, {
           USE_PROFILES: { svg: true },
+          ADD_TAGS: ['animate', 'style'],
+          ADD_ATTR: [
+            'fill',
+            'fill-opacity',
+            'stroke',
+            'stroke-width',
+            'stroke-opacity',
+            'x1',
+            'y1',
+            'x2',
+            'y2',
+            'stop-color',
+            'stop-opacity',
+            'offset',
+            'transform-origin',
+            'transform-box',
+            'transform',
+            'attributeName',
+            'from',
+            'to',
+            'dur',
+            'repeatCount',
+            'id',
+            'class',
+            'href',
+          ],
           FORBID_TAGS: ['foreignObject', 'iframe', 'object', 'embed', 'script'],
           FORBID_ATTR: ['xlink:href'],
           ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|data):|#)/i,
@@ -301,7 +328,7 @@ export default function CustomizePage(): ReactElement {
         </motion.div>
 
         {/* ── Split layout ─────────────────────────────────────────────────── */}
-        <div className="grid lg:grid-cols-[380px_1fr] gap-6 items-start">
+        <div className="grid lg:grid-cols-[380px_1fr] xl:grid-cols-[340px_1fr_340px] gap-6 items-start">
           {/* ════ LEFT: Control Panel ════════════════════════════════════════ */}
           <motion.aside
             initial={{ opacity: 0, x: -20 }}
@@ -337,26 +364,6 @@ export default function CustomizePage(): ReactElement {
                 setAccentHex('');
                 setTextHex('');
               }}
-              hideTitle={hideTitle}
-              hideBackground={hideBackground}
-              hideStats={hideStats}
-              viewMode={viewMode}
-              deltaFormat={deltaFormat}
-              badgeWidth={badgeWidth}
-              badgeHeight={badgeHeight}
-              grace={grace}
-              language={language}
-              timezone={timezone}
-              onHideTitleChange={setHideTitle}
-              onHideBackgroundChange={setHideBackground}
-              onHideStatsChange={setHideStats}
-              onViewModeChange={setViewMode}
-              onDeltaFormatChange={setDeltaFormat}
-              onBadgeWidthChange={setBadgeWidth}
-              onBadgeHeightChange={setBadgeHeight}
-              onGraceChange={setGrace}
-              onLanguageChange={setLanguage}
-              onTimezoneChange={setTimezone}
             />
           </motion.aside>
 
@@ -513,6 +520,37 @@ export default function CustomizePage(): ReactElement {
               </div>
             </div>
           </motion.div>
+
+          {/* ════ RIGHT: Advanced Settings ═══════════════════════════════════ */}
+          <motion.aside
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white/70 backdrop-blur-xl border border-black/10 dark:bg-black/35 dark:border-white/10 rounded-[1.75rem] p-6 flex flex-col gap-6 sticky top-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] xl:col-start-3"
+          >
+            <AdvancedSettingsPanel
+              hideTitle={hideTitle}
+              hideBackground={hideBackground}
+              hideStats={hideStats}
+              viewMode={viewMode}
+              deltaFormat={deltaFormat}
+              badgeWidth={badgeWidth}
+              badgeHeight={badgeHeight}
+              grace={grace}
+              language={language}
+              timezone={timezone}
+              onHideTitleChange={setHideTitle}
+              onHideBackgroundChange={setHideBackground}
+              onHideStatsChange={setHideStats}
+              onViewModeChange={setViewMode}
+              onDeltaFormatChange={setDeltaFormat}
+              onBadgeWidthChange={setBadgeWidth}
+              onBadgeHeightChange={setBadgeHeight}
+              onGraceChange={setGrace}
+              onLanguageChange={setLanguage}
+              onTimezoneChange={setTimezone}
+            />
+          </motion.aside>
         </div>
       </div>
     </div>

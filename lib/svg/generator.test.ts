@@ -4,13 +4,17 @@ import {
   generateMonthlySVG,
   generateNotFoundSVG,
   generateRateLimitSVG,
+  generateHeatmapSVG,
   particleCount,
   escapeXML,
   getSizeScale,
   truncateUsername,
+  deterministicRandom,
+  buildTowerPaths,
 } from './generator';
 import type { BadgeParams, ContributionCalendar, StreakStats, MonthlyStats } from '../../types';
 import { hexColor } from './sanitizer';
+import { themes } from './themes';
 
 describe('generateSVG', () => {
   const mockStats: StreakStats = {
@@ -438,7 +442,7 @@ describe('generateSVG', () => {
 
     it('includes desc element in auto-theme SVG output', () => {
       const svg = generateSVG(mockStats, autoParams, mockCalendar);
-      expect(svg).toContain('<desc>');
+      expect(svg).toContain('<desc id="cp-desc-avi">');
       expect(svg).toContain(String(mockStats.totalContributions));
     });
 
@@ -692,8 +696,12 @@ describe('generateSVG', () => {
         mockCalendar
       );
 
-      expect(svg).toContain('<title>CommitPulse User Stats for octocat</title>');
-      expect(svg).toContain('<desc>');
+      expect(svg).toContain(
+        '<title id="cp-title-octocat">CommitPulse User Stats for octocat</title>'
+      );
+      expect(svg).toContain('<desc id="cp-desc-octocat">');
+      expect(svg).toContain('aria-labelledby="cp-title-octocat"');
+      expect(svg).toContain('aria-describedby="cp-desc-octocat"');
       expect(svg).toContain('100');
       expect(svg).toContain('10');
     });
@@ -859,6 +867,29 @@ describe('generateSVG', () => {
       expect(extendedLongUsername.length).toBeGreaterThan(30);
       expect(svg).toContain('ABCDEFGHIJKL...');
       expect(svg).not.toContain('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    });
+  });
+
+  describe('verify all supported themes produce valid SVG output', () => {
+    it('generates a valid SVG and contains the theme accent color for each supported theme', () => {
+      for (const theme of Object.values(themes)) {
+        const svg = generateSVG(
+          mockStats,
+          {
+            user: 'octocat',
+            bg: theme.bg,
+            text: theme.text,
+            accent: theme.accent,
+            speed: '8s',
+            scale: 'linear',
+          } as unknown as BadgeParams,
+          mockCalendar
+        );
+
+        expect(svg).toContain('<svg');
+        expect(svg).toContain('</svg>');
+        expect(svg.toLowerCase()).toContain(theme.accent.toLowerCase());
+      }
     });
   });
 });
@@ -1205,6 +1236,10 @@ describe('escapeXML', () => {
   it('escapes script injection characters <script>&" together', () => {
     expect(escapeXML('<script>&"')).toBe('&lt;script&gt;&amp;&quot;');
   });
+
+  it('should handle boundary input with only special XML characters', () => {
+    expect(escapeXML('<>&"\'')).toBe('&lt;&gt;&amp;&quot;&#39;');
+  });
 });
 
 describe('particleCount', () => {
@@ -1442,5 +1477,96 @@ describe('Radar Scan Line Animation Alignment', () => {
     const geometryBaseline = extractGeometry(svgBaseline);
     const geometryLong = extractGeometry(svgLong);
     expect(geometryLong).toEqual(geometryBaseline);
+  });
+
+  describe('glow parameter', () => {
+    const mockStats: StreakStats = {
+      currentStreak: 5,
+      longestStreak: 10,
+      totalContributions: 100,
+      todayDate: '2024-06-12',
+    };
+    const mockCalendar = {
+      weeks: [
+        {
+          contributionDays: [
+            { contributionCount: 0, date: '2024-06-10' },
+            { contributionCount: 5, date: '2024-06-11' },
+            { contributionCount: 15, date: '2024-06-12' },
+          ],
+        },
+      ],
+    } as ContributionCalendar;
+
+    it('renders glow filter and attributes by default', () => {
+      const svg = generateSVG(mockStats, { user: 'avi' } as unknown as BadgeParams, mockCalendar);
+      expect(svg).toContain('<filter id="glow"');
+      expect(svg).toContain('filter="url(#glow)"');
+    });
+
+    it('omits glow filter and attributes when glow=false is requested', () => {
+      const svg = generateSVG(
+        mockStats,
+        { user: 'avi', glow: false } as unknown as BadgeParams,
+        mockCalendar
+      );
+      expect(svg).not.toContain('<filter id="glow"');
+      expect(svg).not.toContain('filter="url(#glow)"');
+    });
+
+    it('omits heatmap glow filter and cell filter attributes when glow=false is requested in heatmap', () => {
+      const svgWithGlow = generateHeatmapSVG(
+        mockStats,
+        { user: 'avi', view: 'heatmap' } as unknown as BadgeParams,
+        mockCalendar
+      );
+      expect(svgWithGlow).toContain('<filter id="hm-glow"');
+      expect(svgWithGlow).toContain('filter="url(#hm-glow)"');
+
+      const svgNoGlow = generateHeatmapSVG(
+        mockStats,
+        { user: 'avi', view: 'heatmap', glow: false } as unknown as BadgeParams,
+        mockCalendar
+      );
+      expect(svgNoGlow).not.toContain('<filter id="hm-glow"');
+      expect(svgNoGlow).not.toContain('filter="url(#hm-glow)"');
+    });
+  });
+});
+describe('deterministicRandom', () => {
+  it('returns the same value for the same seed (determinism)', () => {
+    const seed = 'test-seed-42';
+    expect(deterministicRandom(seed)).toBe(deterministicRandom(seed));
+  });
+
+  it('result is always in the range [0, 1)', () => {
+    const seeds = ['hello', 'world', '', 'abc:def:0:offsetX', '12345'];
+    for (const seed of seeds) {
+      const result = deterministicRandom(seed);
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThan(1);
+    }
+  });
+
+  it('returns different values for different seeds', () => {
+    const a = deterministicRandom('seed-alpha');
+    const b = deterministicRandom('seed-beta');
+    expect(a).not.toBe(b);
+  });
+});
+
+describe('buildTowerPaths', () => {
+  it('returns correct paths for scale 1', () => {
+    const paths = buildTowerPaths(15, 1);
+    expect(paths.left).toBe('M0 -5 L0 10 L-16 0 L-16 -15 Z');
+    expect(paths.right).toBe('M0 -5 L0 10 L16 0 L16 -15 Z');
+    expect(paths.top).toBe('M0 -15 L16 -5 L0 5 L-16 -5 Z');
+  });
+
+  it('returns correct paths for scale 0.45', () => {
+    const paths = buildTowerPaths(9, 0.45);
+    expect(paths.left).toBe('M0 -4.5 L0 4.5 L-7.2 0 L-7.2 -9 Z');
+    expect(paths.right).toBe('M0 -4.5 L0 4.5 L7.2 0 L7.2 -9 Z');
+    expect(paths.top).toBe('M0 -9 L7.2 -4.5 L0 0 L-7.2 -4.5 Z');
   });
 });
