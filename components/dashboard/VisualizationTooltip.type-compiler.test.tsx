@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expectTypeOf, it } from 'vitest';
 import type { ComponentProps } from 'react';
 import VisualizationTooltip from './VisualizationTooltip';

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useMemo } from 'react';
 import { Search, X } from 'lucide-react';
 import { TECHNOLOGIES, TECH_CATEGORIES } from '../../data/technologies';
@@ -17,14 +18,14 @@ function TechIcon({ tech, isDark }: { tech: Technology; isDark: boolean }) {
   const filterClass = tech.type === 'simpleicon' && isDark ? 'invert brightness-200' : '';
 
   return (
-    <img
+    <Image
       src={tech.iconUrl}
       alt={tech.name}
       title={tech.name}
       width={24}
       height={24}
-      loading="lazy"
       className={`w-6 h-6 object-contain flex-shrink-0 ${filterClass}`}
+      unoptimized
       onError={(e) => {
         (e.currentTarget as HTMLImageElement).style.display = 'none';
       }}
@@ -59,8 +60,8 @@ export function TechnologiesSection({ selected, onChange }: TechnologiesSectionP
   const recommendations = useMemo(() => getRecommendations(selected), [selected]);
 
   // Debug logging
-  console.log('Selected Technologies:', selected);
-  console.log('Recommendations:', recommendations);
+  console.info('Selected Technologies:', selected);
+  console.info('Recommendations:', recommendations);
 
   const filteredRecommendations = useMemo(() => {
     if (recCategory === 'All') return recommendations;
@@ -153,12 +154,13 @@ export function TechnologiesSection({ selected, onChange }: TechnologiesSectionP
                   key={id}
                   className="inline-flex items-center gap-1.5 pl-2 pr-1 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-700 dark:text-emerald-300"
                 >
-                  <img
+                  <Image
                     src={tech.iconUrl}
                     alt=""
                     width={14}
                     height={14}
                     className={`w-3.5 h-3.5 object-contain ${tech.type === 'simpleicon' && isDark ? 'invert brightness-200' : ''}`}
+                    unoptimized
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).style.display = 'none';
                     }}
@@ -239,12 +241,13 @@ export function TechnologiesSection({ selected, onChange }: TechnologiesSectionP
                           className="flex items-center gap-2.5 flex-1 text-left"
                         >
                           <div className="p-1 rounded-lg bg-gray-100 dark:bg-white/5 group-hover:scale-110 transition-transform duration-200">
-                            <img
+                            <Image
                               src={tech.iconUrl}
                               alt={tech.name}
                               width={20}
                               height={20}
                               className={`w-5 h-5 object-contain ${tech.type === 'simpleicon' && isDark ? 'invert brightness-200' : ''}`}
+                              unoptimized
                               onError={(e) => {
                                 (e.currentTarget as HTMLImageElement).style.display = 'none';
                               }}

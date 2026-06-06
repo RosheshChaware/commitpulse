@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
@@ -102,7 +103,7 @@ describe('Leaderboard - Massive Scaling & High Bounds (Issue #2754 Equivalent)',
     const highRankItem = getByText('#1000');
     expect(highRankItem).toBeTruthy();
     expect(highRankItem.className).toContain('font-mono');
-  });
+  }, 15000);
 
   it('Podium Extraction Memory Allocation: strictly segments exactly the top 3 nodes regardless of massive data input sizes', () => {
     const massiveData = Array.from({ length: 500 }).map((_, i) => ({

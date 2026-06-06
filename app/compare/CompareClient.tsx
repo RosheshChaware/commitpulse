@@ -1313,12 +1313,15 @@ export default function CompareClient() {
                               @{user.profile.username}
                             </span>
                           </div>
-                          <img
+                          <Image
                             data-monolith-img="true"
                             key={`${user.profile.username}-${monolithKey}`}
                             src={`${BASE_URL}/api/streak?user=${encodeURIComponent(user.profile.username)}&theme=neon&entrance=none&_k=${monolithKey}`}
                             alt={`${user.profile.username}'s CommitPulse monolith`}
                             className="w-full"
+                            width={400}
+                            height={150}
+                            unoptimized
                           />
                         </motion.div>
                       ))}

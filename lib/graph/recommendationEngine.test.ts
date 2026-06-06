@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { getRecommendations } from './recommendationEngine';
-import { DEPENDENCY_GRAPH } from './dependencyGraph';
 
 describe('Dependency Graph Recommendation Engine', () => {
   it('should return empty list when nothing is selected', () => {

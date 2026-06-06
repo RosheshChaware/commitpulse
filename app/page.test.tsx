@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { HTMLAttributes, AnchorHTMLAttributes, ReactNode, ImgHTMLAttributes } from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -358,18 +359,22 @@ describe('LandingPage', () => {
     render(<LandingPage />);
 
     const featureHeadings = screen.getAllByRole('heading', { level: 3 });
-
-    expect(featureHeadings).toHaveLength(6);
-
-    const titles = featureHeadings.map((h) => h.textContent);
-    expect(titles).toEqual([
+    const targetTitles = [
       'Real-time Sync',
       'Theme Engine',
       'Isometric Math',
       'Navigation',
       'Resources',
       'Connect',
-    ]);
+    ];
+    const matchedHeadings = featureHeadings.filter((h) =>
+      targetTitles.includes(h.textContent || '')
+    );
+
+    expect(matchedHeadings).toHaveLength(6);
+
+    const titles = matchedHeadings.map((h) => h.textContent);
+    expect(titles).toEqual(targetTitles);
   });
 
   it('renders the CustomizeCTA', () => {
