@@ -33,6 +33,7 @@ import { FeatureCard, FeatureCardsSection } from '@/components/FeatureCards';
 import { DiscordButton } from '@/components/DiscordButton';
 
 import { WallOfLove } from '@/components/WallOfLove';
+import { ShowcaseBuilder } from '@/components/ShowcaseBuilder';
 import { validateGitHubUsername } from '@/lib/validations';
 
 const Icons = {
@@ -1029,6 +1030,8 @@ export default function LandingPage() {
             desc="Sophisticated 3D projection formulas turn 2D data into digital architecture."
           />
         </FeatureCardsSection>
+
+        <ShowcaseBuilder />
 
         <WallOfLove />
 
