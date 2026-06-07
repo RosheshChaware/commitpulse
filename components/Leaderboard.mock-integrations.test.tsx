@@ -4,17 +4,51 @@ import { describe, expect, it, vi } from 'vitest';
 import Leaderboard, { type Contributor } from './Leaderboard';
 
 vi.mock('next/image', () => ({
-  default: ({ alt = '', ...props }: ComponentProps<'img'>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} {...props} />
-  ),
+  default: ({
+    alt = '',
+    src,
+    fill: _fill,
+    ...props
+  }: ComponentProps<'img'> & { fill?: boolean }) => {
+    void _fill;
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img alt={alt} src={src || undefined} {...props} />
+    );
+  },
 }));
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: ComponentProps<'div'> & { children?: ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
+    div: ({
+      children,
+      whileInView: _whileInView,
+      whileHover: _whileHover,
+      whileTap: _whileTap,
+      initial: _initial,
+      animate: _animate,
+      viewport: _viewport,
+      transition: _transition,
+      ...props
+    }: ComponentProps<'div'> & {
+      children?: ReactNode;
+      whileInView?: unknown;
+      whileHover?: unknown;
+      whileTap?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      viewport?: unknown;
+      transition?: unknown;
+    }) => {
+      void _whileInView;
+      void _whileHover;
+      void _whileTap;
+      void _initial;
+      void _animate;
+      void _viewport;
+      void _transition;
+      return <div {...props}>{children}</div>;
+    },
   },
 }));
 

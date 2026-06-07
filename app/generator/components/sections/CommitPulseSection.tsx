@@ -330,14 +330,16 @@ export function CommitPulseSection({
                     the full dashboard link above.
                   </p>
                 )}
-                <img
+                <Image
                   key={`${badgeKey}-${commitPulseAccent}`}
                   src={badgeUrl}
                   alt={`CommitPulse badge for ${debouncedUsername}`}
+                  width={480}
+                  height={280}
                   className={`w-full h-auto max-w-[480px] transition-opacity duration-500 ${
                     badgeLoaded ? 'opacity-100' : 'opacity-0 absolute'
                   }`}
-                  onLoad={() => {
+                  onLoadingComplete={() => {
                     setBadgeLoaded(true);
                     setBadgeError(false);
                   }}
@@ -345,6 +347,7 @@ export function CommitPulseSection({
                     setBadgeError(true);
                     setBadgeLoaded(false);
                   }}
+                  unoptimized
                 />
               </div>
 

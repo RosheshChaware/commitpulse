@@ -839,7 +839,11 @@ export default function LandingPage() {
                         </div>
                       </div>
                       {userDetailsLoading ? (
-                        <div className="h-8 w-20 bg-white/5 animate-pulse rounded-lg mt-1" />
+                        <div className="shimmer h-8 w-20 bg-white/5 animate-pulse rounded-lg mt-1" />
+                      ) : userDetailsError ? (
+                        <div className="mt-1 rounded-lg border border-red-500/10 bg-red-500/5 px-3 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-red-500">
+                          Unable to load stats
+                        </div>
                       ) : (
                         <div className="text-2xl font-bold bg-gradient-to-br from-white to-zinc-400 bg-clip-text text-transparent flex items-baseline gap-1 mt-1 font-mono">
                           <CountUp value={item.value} />

@@ -2,17 +2,40 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import GrowthTrendChart from './GrowthTrendChart';
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-      <div {...props}>{children}</div>
-    ),
-    path: ({ children, ...props }: React.SVGProps<SVGPathElement>) => (
-      <path {...props}>{children}</path>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}));
+vi.mock('framer-motion', () => {
+  const strippedProps = new Set([
+    'initial',
+    'animate',
+    'exit',
+    'whileHover',
+    'whileTap',
+    'whileInView',
+    'transition',
+    'viewport',
+    'variants',
+    'layout',
+    'layoutId',
+    'custom',
+    'onViewportEnter',
+    'onViewportLeave',
+    'onUpdate',
+  ]);
+
+  const filterProps = (props: Record<string, unknown>) =>
+    Object.fromEntries(Object.entries(props).filter(([key]) => !strippedProps.has(key)));
+
+  return {
+    motion: {
+      div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+        <div {...filterProps(props as Record<string, unknown>)}>{children}</div>
+      ),
+      path: ({ children, ...props }: React.SVGProps<SVGPathElement>) => (
+        <path {...filterProps(props as Record<string, unknown>)}>{children}</path>
+      ),
+    },
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  };
+});
 
 function generateMassiveActivity(
   baseDate: Date,

@@ -7,10 +7,18 @@ import React from 'react';
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: ({ alt = '', src = '', ...props }: ComponentProps<'img'>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} src={src} {...props} />
-  ),
+  default: ({
+    alt = '',
+    src,
+    fill: _fill,
+    ...props
+  }: ComponentProps<'img'> & { fill?: boolean }) => {
+    void _fill;
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img alt={alt} src={src || undefined} {...props} />
+    );
+  },
 }));
 
 // Mock framer-motion
@@ -18,23 +26,42 @@ vi.mock('framer-motion', () => ({
   motion: {
     div: ({
       children,
-      whileHover,
-      whileInView,
+      whileHover: _whileHover,
+      whileInView: _whileInView,
+      whileTap: _whileTap,
+      initial: _initial,
+      animate: _animate,
+      viewport: _viewport,
+      transition: _transition,
       ...props
     }: {
       children?: ReactNode;
       whileHover?: unknown;
       whileInView?: unknown;
+      whileTap?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      viewport?: unknown;
+      transition?: unknown;
       [key: string]: unknown;
-    }) => (
-      <div
-        {...props}
-        data-while-hover={JSON.stringify(whileHover)}
-        data-while-in-view={JSON.stringify(whileInView)}
-      >
-        {children}
-      </div>
-    ),
+    }) => {
+      void _whileHover;
+      void _whileInView;
+      void _whileTap;
+      void _initial;
+      void _animate;
+      void _viewport;
+      void _transition;
+      return (
+        <div
+          {...props}
+          data-while-hover={JSON.stringify(_whileHover)}
+          data-while-in-view={JSON.stringify(_whileInView)}
+        >
+          {children}
+        </div>
+      );
+    },
   },
 }));
 

@@ -15,18 +15,42 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
-vi.mock('framer-motion', () => ({
-  motion: new Proxy(
-    {},
-    {
-      get: (_, tag) => {
-        return ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) =>
-          React.createElement(tag as string, props, children);
-      },
-    }
-  ),
-  AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
-}));
+vi.mock('framer-motion', () => {
+  const strippedProps = new Set([
+    'initial',
+    'animate',
+    'exit',
+    'whileHover',
+    'whileTap',
+    'whileInView',
+    'transition',
+    'viewport',
+    'variants',
+    'layout',
+    'layoutId',
+    'custom',
+    'onViewportEnter',
+    'onViewportLeave',
+    'onUpdate',
+  ]);
+
+  return {
+    motion: new Proxy(
+      {},
+      {
+        get: (_, tag) => {
+          return ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) => {
+            const filteredProps = Object.fromEntries(
+              Object.entries(props).filter(([key]) => !strippedProps.has(key))
+            );
+            return React.createElement(tag as string, filteredProps, children);
+          };
+        },
+      }
+    ),
+    AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
+  };
+});
 
 const mockResponse = {
   user1: {

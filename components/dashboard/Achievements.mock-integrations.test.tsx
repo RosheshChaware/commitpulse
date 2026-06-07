@@ -15,15 +15,7 @@ type MotionDivProps = ComponentProps<'div'> & {
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({
-      children,
-      whileInView,
-      viewport,
-      initial,
-      animate,
-      transition,
-      ...props
-    }: MotionDivProps) => <div {...props}>{children}</div>,
+    div: ({ children, ...props }: MotionDivProps) => <div {...props}>{children}</div>,
   },
 }));
 

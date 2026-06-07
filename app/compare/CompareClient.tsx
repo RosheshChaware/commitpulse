@@ -43,7 +43,6 @@ import {
   Tent,
   Camera,
 } from 'lucide-react';
-import html2canvas from 'html2canvas';
 import { validateGitHubUsername } from '@/lib/validations';
 import { toPng } from 'html-to-image';
 

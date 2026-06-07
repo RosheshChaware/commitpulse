@@ -7,7 +7,11 @@ import Leaderboard from './Leaderboard';
 import '@testing-library/jest-dom';
 
 vi.mock('next/image', () => ({
-  default: (props: ImgHTMLAttributes<HTMLImageElement>) => <img alt="" {...props} />,
+  default: (props: ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean }) => {
+    const { fill: _fill, src, alt = '', ...rest } = props;
+    void _fill;
+    return <img alt={alt} src={src || undefined} {...rest} />;
+  },
 }));
 
 class MockIntersectionObserver {

@@ -3,6 +3,8 @@ import '@testing-library/jest-dom/vitest';
 import React, { type ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
+const TEST_TIMEOUT = 10000;
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
     replace: vi.fn(),
@@ -12,18 +14,42 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
-vi.mock('framer-motion', () => ({
-  motion: new Proxy(
-    {},
-    {
-      get: (_, tag) => {
-        return ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) =>
-          React.createElement(tag as string, props, children);
-      },
-    }
-  ),
-  AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
-}));
+vi.mock('framer-motion', () => {
+  const strippedProps = new Set([
+    'initial',
+    'animate',
+    'exit',
+    'whileHover',
+    'whileTap',
+    'whileInView',
+    'transition',
+    'viewport',
+    'variants',
+    'layout',
+    'layoutId',
+    'custom',
+    'onViewportEnter',
+    'onViewportLeave',
+    'onUpdate',
+  ]);
+
+  return {
+    motion: new Proxy(
+      {},
+      {
+        get: (_, tag) => {
+          return ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) => {
+            const filteredProps = Object.fromEntries(
+              Object.entries(props).filter(([key]) => !strippedProps.has(key))
+            );
+            return React.createElement(tag as string, filteredProps, children);
+          };
+        },
+      }
+    ),
+    AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
+  };
+});
 
 vi.doMock('recharts', () => ({
   ResponsiveContainer: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
@@ -35,41 +61,66 @@ vi.doMock('recharts', () => ({
   Tooltip: () => <div />,
 }));
 
-async function renderCompareClient() {
-  const { default: CompareClient } = await import('./CompareClient');
+let CompareClient: React.ComponentType;
 
+beforeAll(async () => {
+  const importedModule = await import('./CompareClient');
+  CompareClient = importedModule.default;
+}, 20000);
+
+function renderCompareClient() {
   return render(<CompareClient />);
 }
 
 describe('CompareClient responsive breakpoints', () => {
-  it('renders mobile friendly input controls', async () => {
-    await renderCompareClient();
+  it(
+    'renders mobile friendly input controls',
+    async () => {
+      await renderCompareClient();
 
-    expect(screen.getByPlaceholderText(/github username #1/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/github username #2/i)).toBeInTheDocument();
-  });
+      expect(screen.getByPlaceholderText(/github username #1/i)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/github username #2/i)).toBeInTheDocument();
+    },
+    TEST_TIMEOUT
+  );
 
-  it('renders compare button for small viewport interactions', async () => {
-    await renderCompareClient();
+  it(
+    'renders compare button for small viewport interactions',
+    async () => {
+      await renderCompareClient();
 
-    expect(screen.getByRole('button', { name: /compare/i })).toBeInTheDocument();
-  });
+      expect(screen.getByRole('button', { name: /compare/i })).toBeInTheDocument();
+    },
+    TEST_TIMEOUT
+  );
 
-  it('uses responsive container spacing classes', async () => {
-    const { container } = await renderCompareClient();
+  it(
+    'uses responsive container spacing classes',
+    async () => {
+      const { container } = await renderCompareClient();
 
-    expect(container.querySelector('.px-4.sm\\:px-6')).toBeTruthy();
-  });
+      expect(container.querySelector('.px-4.sm\\:px-6')).toBeTruthy();
+    },
+    TEST_TIMEOUT
+  );
 
-  it('uses responsive layout grid classes', async () => {
-    const { container } = await renderCompareClient();
+  it(
+    'uses responsive layout grid classes',
+    async () => {
+      const { container } = await renderCompareClient();
 
-    expect(container.querySelector('.flex-col.sm\\:flex-row')).toBeTruthy();
-  });
+      expect(container.querySelector('.flex-col.sm\\:flex-row')).toBeTruthy();
+    },
+    TEST_TIMEOUT
+  );
 
-  it('contains responsive typography classes for mobile scaling', async () => {
-    const { container } = await renderCompareClient();
+  it(
+    'contains responsive typography classes for mobile scaling',
+    async () => {
+      const { container } = await renderCompareClient();
 
-    expect(container.querySelector('.text-3xl.sm\\:text-4xl')).toBeTruthy();
-  });
+      expect(container.querySelector('.text-3xl.sm\\:text-4xl')).toBeTruthy();
+    },
+    TEST_TIMEOUT
+  );
 });

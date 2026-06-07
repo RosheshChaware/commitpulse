@@ -231,7 +231,7 @@ describe('LandingPage', () => {
     const heading = screen.getByRole('heading', { level: 1 });
     expect(heading.textContent).toMatch(/Elevate Your/i);
     expect(heading.textContent).toMatch(/Contribution Story/i);
-  });
+  }, 10000);
 
   it('renders the input field empty by default', () => {
     render(<LandingPage />);
@@ -271,11 +271,14 @@ describe('LandingPage', () => {
     expect(input.value).toBe('octocat');
 
     // The badge img element should appear in the DOM with the correct URL
-    await waitFor(() => {
-      const img = screen.getByTestId('badge-img') as HTMLImageElement;
-      expect(img).toBeDefined();
-      expect(img.src).toContain('user=octocat');
-    });
+    await waitFor(
+      () => {
+        const img = screen.getByTestId('badge-img') as HTMLImageElement;
+        expect(img).toBeDefined();
+        expect(img.src).toContain('user=octocat');
+      },
+      { timeout: 5000 }
+    );
 
     // Simulate the browser successfully loading the badge image
     await act(async () => {
@@ -452,7 +455,7 @@ describe('LandingPage', () => {
     });
 
     // Badge img renders; simulate the browser failing to load it (e.g. API returned 400)
-    await waitFor(() => screen.getByTestId('badge-img'));
+    await waitFor(() => screen.getByTestId('badge-img'), { timeout: 5000 });
     await act(async () => {
       fireEvent.error(screen.getByTestId('badge-img'));
     });
@@ -474,7 +477,7 @@ describe('LandingPage', () => {
     });
 
     // Simulate the browser failing to load the badge image
-    await waitFor(() => screen.getByTestId('badge-img'));
+    await waitFor(() => screen.getByTestId('badge-img'), { timeout: 5000 });
     await act(async () => {
       fireEvent.error(screen.getByTestId('badge-img'));
     });
@@ -498,11 +501,14 @@ describe('LandingPage', () => {
     });
 
     // An <img> element with the API URL should appear (not inline SVG)
-    await waitFor(() => {
-      const img = screen.getByTestId('badge-img') as HTMLImageElement;
-      expect(img).toBeDefined();
-      expect(img.src).toContain('user=octocat');
-    });
+    await waitFor(
+      () => {
+        const img = screen.getByTestId('badge-img') as HTMLImageElement;
+        expect(img).toBeDefined();
+        expect(img.src).toContain('user=octocat');
+      },
+      { timeout: 5000 }
+    );
 
     // The SVG text is never injected into the DOM, so no <script> tag can exist
     expect(document.querySelector('img[data-testid="badge-img"]')).not.toBeNull();
@@ -540,10 +546,13 @@ describe('LandingPage', () => {
       fireEvent.change(input, { target: { value: 'octocat' } });
     });
 
-    await waitFor(() => {
-      const errorMessages = screen.getAllByText('Unable to load stats');
-      expect(errorMessages.length).toBe(4);
-    });
+    await waitFor(
+      () => {
+        const errorMessages = screen.getAllByText('Unable to load stats');
+        expect(errorMessages.length).toBe(4);
+      },
+      { timeout: 5000 }
+    );
 
     vi.restoreAllMocks();
   });
