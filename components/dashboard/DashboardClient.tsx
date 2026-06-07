@@ -337,6 +337,7 @@ export default function DashboardClient({
   const [isLoadingSecond, setIsLoadingSecond] = useState(false);
   const [compareError, setCompareError] = useState<string | null>(null);
   const router = useRouter();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
   const modalRef = useRef<HTMLDivElement>(null);
   const compareInputRef = useRef<HTMLInputElement>(null);
@@ -1089,13 +1090,13 @@ export default function DashboardClient({
                 <p className="text-xs text-[#A1A1AA] mb-3 font-semibold">
                   {initialData.profile.name}&apos;s Heatmap
                 </p>
-                <Heatmap data={initialData.activity} />
+                <Heatmap data={initialData.activity} timeZone={timeZone} />
               </div>
               <div className="border-t border-black/10 dark:border-white/5 pt-8">
                 <p className="text-xs text-[#A1A1AA] mb-3 font-semibold">
                   {secondUserData.profile.name}&apos;s Heatmap
                 </p>
-                <Heatmap data={secondUserData.activity} />
+                <Heatmap data={secondUserData.activity} timeZone={timeZone} />
               </div>
             </div>
           </div>
