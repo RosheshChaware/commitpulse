@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import Image from 'next/image';
 import { trackUser } from '@/utils/tracking';
 
@@ -98,7 +98,7 @@ function CountUp({ value, duration = 1000 }: { value: number; duration?: number 
     const start = 0;
     const end = value;
     if (start === end) {
-      // Safe: early-exit guard when the value hasn't changed — avoids scheduling
+      // Safe: early-exit guard when the value hasn't changed ΓÇö avoids scheduling
       // a setInterval just to immediately clear it. No stale-dependency risk
       // because `value` is the only dep and this path reads it synchronously.
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -293,7 +293,7 @@ interface UserDetails {
   };
 }
 
-export default function LandingPage() {
+export default function LandingPageClient() {
   const getDisplayUsername = (name: string) => {
     if (name.includes('github.com/')) {
       const parts = name.split('github.com/');
