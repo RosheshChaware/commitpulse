@@ -1047,127 +1047,14 @@ const STEPS = [
     title: 'Open Your Profile Repo',
     body: 'Navigate to github.com/YOUR_USERNAME/YOUR_USERNAME - your special profile repository.',
   },
-  {
-    n: '02',
-    title: 'Edit README.md',
-    body: "Click the pencil icon to open the file in GitHub's built-in editor.",
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CommitPulse | Elevate Your GitHub README',
+    description:
+      'Generate a cinematic, isometric 3D SVG of your GitHub contributions for your README.',
   },
-  {
-    n: '03',
-    title: 'Paste the Snippet',
-    body: 'Place your cursor wherever you want the monolith to appear, then paste (Ctrl+V / Cmd+V).',
-  },
-  {
-    n: '04',
-    title: 'Save & Ship It',
-    body: 'Click "Commit changes" and visit your profile. Your 3D streak is now live.',
-  },
-];
+};
 
-function SuccessGuide({
-  markdown,
-  username,
-  onDismiss,
-}: {
-  markdown: string;
-  username: string;
-  onDismiss: () => void;
-}) {
-  return (
-    <motion.div
-      key="success-guide"
-      initial={{ opacity: 0, y: 32, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 24, scale: 0.97 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-      className="mx-auto mb-12 max-w-4xl"
-    >
-      <div className="relative overflow-hidden rounded-xl border border-black/10 bg-white dark:border-[rgba(255,255,255,0.1)] dark:bg-[#0a0a0a]">
-        <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-3/4 -translate-x-1/2 rounded-full bg-white/3 blur-[80px]" />
-
-        <div className="flex items-start justify-between border-b border-black/10 px-8 pb-6 pt-8 dark:border-white/5">
-          <div className="flex items-center gap-4">
-            <span className="relative mt-1 flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black/40 opacity-40 dark:bg-white/70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-black dark:bg-white shadow-[0_0_10px_rgba(255,255,255,0.9)]" />
-            </span>
-            <div>
-              <p className="mb-0.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-500 dark:text-[#A1A1AA]">
-                Markdown Copied
-              </p>
-              <h2 className="text-2xl font-extrabold tracking-tight text-black dark:text-white">
-                Your Monolith is Ready - Deploy It in 4 Steps
-              </h2>
-            </div>
-          </div>
-
-          <button
-            onClick={onDismiss}
-            className="ml-4 mt-1 shrink-0 rounded-xl p-2 text-gray-500 transition-all hover:bg-gray-100 hover:text-black dark:text-white/55 dark:hover:bg-white/5 dark:hover:text-white"
-            aria-label="Dismiss guide"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-
-        <div className="grid gap-px border-b border-black/10 bg-black/5 dark:border-white/5 dark:bg-white/5 sm:grid-cols-2">
-          {STEPS.map((step, i) => (
-            <motion.div
-              key={step.n}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08 * i, duration: 0.4 }}
-              className="flex gap-4 bg-white p-6 dark:bg-[#050505]"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-100 text-xs font-bold tracking-widest text-gray-600 dark:border-[rgba(255,255,255,0.08)] dark:bg-[#111] dark:text-[#A1A1AA]">
-                {step.n}
-              </span>
-              <div>
-                <p className="mb-1 text-sm font-bold text-black dark:text-white">{step.title}</p>
-                <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-500">
-                  {step.body}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="px-8 py-6">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-gray-500 dark:text-white/55">
-            Your copied snippet
-          </p>
-          <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-gray-100 px-4 py-3 font-mono text-sm dark:border-white/8 dark:bg-black/60">
-            <span className="shrink-0 select-none text-gray-500 dark:text-[#A1A1AA]">$</span>
-            <code className="flex-1 overflow-x-auto break-all leading-relaxed text-black dark:text-white/80">
-              {markdown}
-            </code>
-          </div>
-          <p className="mt-4 text-xs leading-relaxed text-gray-500 dark:text-white/55">
-            Tip: Add <code className="text-gray-700 dark:text-white/55">?accent=808080</code> to the
-            URL to change your monolith&apos;s colour palette.
-          </p>
-          <div className="mt-8 flex justify-center border-t border-black/10 pt-6 dark:border-white/5">
-            <Link href={`/dashboard/${username}`} onClick={() => trackUser(username)}>
-              <span className="border border-black/10 bg-gray-100 px-6 py-2.5 rounded-lg text-sm font-semibold text-black transition-all duration-200 hover:bg-gray-200 hover:scale-[1.01] active:scale-[0.99] dark:border-[rgba(255,255,255,0.15)] dark:bg-white dark:text-black dark:hover:bg-zinc-100">
-                Watch Your Dashboard
-              </span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
+export default function LandingPage() {
+  return <LandingPageClient />;
 }
