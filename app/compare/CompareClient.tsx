@@ -1555,8 +1555,11 @@ export default function CompareClient() {
           setError(json.error || 'Failed to fetch comparison data.');
           return;
         }
-
-        setData(json);
+        if ('error' in json) {
+          setError(json.error);
+          setData(null);
+          return;
+        }
         await writeCompareCache(u1, u2, json);
         setMonolithKey((k) => k + 1);
       } catch {
