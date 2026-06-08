@@ -1,3 +1,4 @@
+import { HTMLMotionProps } from "framer-motion";
 import type { HTMLAttributes, AnchorHTMLAttributes, ReactNode, ImgHTMLAttributes } from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -504,7 +505,7 @@ describe('LandingPage', () => {
   });
 
   it('shows shimmer skeleton on stat cards while user details are loading', async () => {
-    vi.spyOn(global, 'fetch').mockImplementation(() => new Promise(() => {}));
+    vi.spyOn(global, 'fetch').mockImplementation(() => new Promise(() => { }));
 
     render(<LandingPage />);
     const input = screen.getByPlaceholderText('Enter GitHub Username') as HTMLInputElement;

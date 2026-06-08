@@ -43,7 +43,6 @@ import {
   Tent,
   Camera,
 } from 'lucide-react';
-import html2canvas from 'html2canvas';
 import { validateGitHubUsername } from '@/lib/validations';
 import { toPng } from 'html-to-image';
 
@@ -232,9 +231,8 @@ function StatBattle({
       <div className="flex justify-between items-end mb-3">
         <div className="text-left">
           <span
-            className={`text-2xl font-bold tracking-tight ${
-              winnerA ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
-            }`}
+            className={`text-2xl font-bold tracking-tight ${winnerA ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
+              }`}
           >
             {valueA.toLocaleString()}
           </span>
@@ -251,9 +249,8 @@ function StatBattle({
             </span>
           )}
           <span
-            className={`text-2xl font-bold tracking-tight ${
-              winnerB ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
-            }`}
+            className={`text-2xl font-bold tracking-tight ${winnerB ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
+              }`}
           >
             {valueB.toLocaleString()}
           </span>
@@ -264,21 +261,19 @@ function StatBattle({
           initial={{ width: 0 }}
           animate={{ width: `${pctA}%` }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className={`h-full rounded-l-full ${
-            winnerA
-              ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
-              : 'bg-zinc-400 dark:bg-zinc-600'
-          }`}
+          className={`h-full rounded-l-full ${winnerA
+            ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+            : 'bg-zinc-400 dark:bg-zinc-600'
+            }`}
         />
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${100 - pctA}%` }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className={`h-full rounded-r-full ${
-            winnerB
-              ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
-              : 'bg-zinc-400 dark:bg-zinc-600'
-          }`}
+          className={`h-full rounded-r-full ${winnerB
+            ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+            : 'bg-zinc-400 dark:bg-zinc-600'
+            }`}
         />
       </div>
     </motion.div>
@@ -955,19 +950,490 @@ function DeveloperSkillsRadar({
   );
 }
 
+/* ── helper: insights utilities ───────────────────────────────────────── */
+
+function getActiveDays(activity: ActivityData[]): number {
+  return activity.filter((d) => d.count > 0).length;
+}
+
+function getTotalForks(userData: CompareUserData): number {
+  const extended = userData as CompareUserData & {
+    graphData?: { nodes: Array<{ type?: string; stats?: { forks?: number } }> };
+    popularRepos?: Array<{ forkCount?: number }>;
+  };
+  if (extended.graphData?.nodes) {
+    return extended.graphData.nodes
+      .filter((n) => n.stats?.forks !== undefined && n.type !== 'User')
+      .reduce((sum, n) => sum + (n.stats?.forks || 0), 0);
+  }
+  if (extended.popularRepos) {
+    return extended.popularRepos.reduce((sum, r) => sum + (r.forkCount || 0), 0);
+  }
+  return 0;
+}
+
+/* ── helper: insights stats cards ─────────────────────────────────────── */
+
+function InsightsStatsCards({
+  user1,
+  user2,
+}: {
+  user1: CompareUserData;
+  user2: CompareUserData;
+}) {
+  const forks1 = getTotalForks(user1);
+  const forks2 = getTotalForks(user2);
+  const activeDays1 = getActiveDays(user1.activity);
+  const activeDays2 = getActiveDays(user2.activity);
+
+  const cards: {
+    label: string;
+    icon: React.ComponentType<{ size?: number; className?: string }>;
+    a: string | number;
+    b: string | number;
+    isText?: boolean;
+    suffix?: string;
+  }[] = [
+      {
+        label: 'Total Commits',
+        icon: GitCommit,
+        a: user1.stats.totalContributions,
+        b: user2.stats.totalContributions,
+        suffix: ' commits',
+      },
+      {
+        label: 'Stars Earned',
+        icon: Star,
+        a: user1.profile.stats.stars,
+        b: user2.profile.stats.stars,
+        suffix: ' stars',
+      },
+      {
+        label: 'Forks',
+        icon: GitBranch,
+        a: forks1,
+        b: forks2,
+        suffix: ' forks',
+      },
+      {
+        label: 'Top Language',
+        icon: Code2,
+        a: user1.languages[0]?.name || 'N/A',
+        b: user2.languages[0]?.name || 'N/A',
+        isText: true,
+      },
+      {
+        label: 'Active Days',
+        icon: Calendar,
+        a: activeDays1,
+        b: activeDays2,
+        suffix: ' days',
+      },
+    ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <h2 className="text-xs text-[#A1A1AA] uppercase tracking-widest font-medium mb-4 flex items-center gap-2">
+        <TrendingUp size={14} className="text-violet-400" />
+        Developer Insights
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        {cards.map((card) => {
+          const Icon = card.icon;
+          const winA = !card.isText && (card.a as number) > (card.b as number);
+          const winB = !card.isText && (card.b as number) > (card.a as number);
+
+          return (
+            <motion.div
+              key={card.label}
+              whileHover={{ y: -2 }}
+              className="p-4 rounded-xl bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-[rgba(255,255,255,0.08)] hover:border-black/20 dark:hover:border-[rgba(255,255,255,0.14)] transition-all duration-200"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Icon size={13} className="text-[#A1A1AA]" />
+                <span className="text-[10px] text-[#A1A1AA] uppercase tracking-widest font-medium leading-none">
+                  {card.label}
+                </span>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-[#A1A1AA] truncate max-w-[70px]">
+                    @{user1.profile.username}
+                  </span>
+                  <span
+                    className={`text-sm font-bold ${winA ? 'text-emerald-500' : 'text-gray-900 dark:text-white'}`}
+                  >
+                    {card.isText ? card.a : `${(card.a as number).toLocaleString()}${card.suffix || ''}`}
+                    {winA && (
+                      <span className="ml-1 text-[8px] text-emerald-400">★</span>
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-[#A1A1AA] truncate max-w-[70px]">
+                    @{user2.profile.username}
+                  </span>
+                  <span
+                    className={`text-sm font-bold ${winB ? 'text-emerald-500' : 'text-gray-900 dark:text-white'}`}
+                  >
+                    {card.isText ? card.b : `${(card.b as number).toLocaleString()}${card.suffix || ''}`}
+                    {winB && (
+                      <span className="ml-1 text-[8px] text-emerald-400">★</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── helper: contribution heatmap comparison ──────────────────────────── */
+
+const HEATMAP_INTENSITY = [
+  'bg-zinc-800/50',
+  'bg-emerald-900/70',
+  'bg-emerald-700/80',
+  'bg-emerald-500',
+  'bg-emerald-400',
+];
+
+function ContributionHeatmapComparison({
+  user1,
+  user2,
+}: {
+  user1: CompareUserData;
+  user2: CompareUserData;
+}) {
+  function buildWeeks(activity: ActivityData[]): ActivityData[][] {
+    const weeks: ActivityData[][] = [];
+    for (let i = 0; i < activity.length; i += 7) {
+      weeks.push(activity.slice(i, i + 7));
+    }
+    return weeks;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+    >
+      <h2 className="text-xs text-[#A1A1AA] uppercase tracking-widest font-medium mb-4 flex items-center gap-2">
+        <Calendar size={14} className="text-emerald-400" />
+        Contribution Heatmap
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[user1, user2].map((user, idx) => {
+          const weeks = buildWeeks(user.activity);
+          return (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: idx === 0 ? -12 : 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              className="p-5 rounded-xl bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-[rgba(255,255,255,0.08)]"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs text-[#A1A1AA] uppercase tracking-widest font-medium">
+                  @{user.profile.username}
+                </h3>
+                <span className="text-[10px] text-[#A1A1AA]">
+                  {getActiveDays(user.activity)} active days
+                </span>
+              </div>
+              <div className="flex gap-[3px] overflow-x-auto pb-2">
+                {weeks.map((week, wi) => (
+                  <div key={wi} className="flex flex-col gap-[3px]">
+                    {week.map((day, di) => (
+                      <div
+                        key={di}
+                        title={`${day.date}: ${day.count} contributions`}
+                        className={`w-[11px] h-[11px] rounded-[2px] ${HEATMAP_INTENSITY[day.intensity]} transition-colors hover:ring-1 hover:ring-white/30`}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-1.5 mt-3 justify-end">
+                <span className="text-[9px] text-[#A1A1AA]">Less</span>
+                {HEATMAP_INTENSITY.map((color, i) => (
+                  <div
+                    key={i}
+                    className={`w-[10px] h-[10px] rounded-[2px] ${color}`}
+                  />
+                ))}
+                <span className="text-[9px] text-[#A1A1AA]">More</span>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── helper: insights winner badge ────────────────────────────────────── */
+
+function InsightsWinnerBadge({
+  user1,
+  user2,
+}: {
+  user1: CompareUserData;
+  user2: CompareUserData;
+}) {
+  const days1 = getActiveDays(user1.activity);
+  const days2 = getActiveDays(user2.activity);
+
+  const maxC = Math.max(user1.stats.totalContributions, user2.stats.totalContributions, 1);
+  const maxS = Math.max(user1.profile.stats.stars, user2.profile.stats.stars, 1);
+  const maxD = Math.max(days1, days2, 1);
+
+  const score1 =
+    (user1.stats.totalContributions / maxC) * 40 +
+    (user1.profile.stats.stars / maxS) * 30 +
+    (days1 / maxD) * 30;
+
+  const score2 =
+    (user2.stats.totalContributions / maxC) * 40 +
+    (user2.profile.stats.stars / maxS) * 30 +
+    (days2 / maxD) * 30;
+
+  const isTie = Math.abs(score1 - score2) < 0.5;
+  const user1Wins = score1 > score2;
+  const winner = isTie ? null : user1Wins ? user1 : user2;
+  const loser = isTie ? null : user1Wins ? user2 : user1;
+
+  let reason = '';
+  if (winner && loser) {
+    const cDiff = winner.stats.totalContributions - loser.stats.totalContributions;
+    const sDiff = winner.profile.stats.stars - loser.profile.stats.stars;
+    const dDiff = getActiveDays(winner.activity) - getActiveDays(loser.activity);
+    if (cDiff >= sDiff && cDiff >= dDiff) {
+      reason = `${cDiff.toLocaleString()} more commits sealed the win`;
+    } else if (sDiff >= cDiff && sDiff >= dDiff) {
+      reason = `${sDiff.toLocaleString()} more stars earned the edge`;
+    } else {
+      reason = `${dDiff} more active days made the difference`;
+    }
+  }
+
+  const totalScore = score1 + score2 || 1;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <h2 className="text-xs text-[#A1A1AA] uppercase tracking-widest font-medium mb-4 flex items-center gap-2">
+        <Trophy size={14} className="text-amber-400" />
+        Insights Verdict
+      </h2>
+      <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-[rgba(255,255,255,0.08)] bg-white dark:bg-[#0a0a0a]">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-amber-500/5 pointer-events-none" />
+
+        <div className="relative p-6 sm:p-8">
+          {isTie ? (
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/50 border border-black/5 dark:border-white/5 mb-3">
+                <Swords size={14} className="text-zinc-400" />
+                <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                  Draw
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                It&apos;s a Tie!
+              </h3>
+              <p className="text-sm text-[#A1A1AA]">
+                Both developers are evenly matched across all metrics
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="flex-1 text-center sm:text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 mb-3">
+                  <Trophy size={12} className="text-amber-500" />
+                  <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                    Winner
+                  </span>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                  @{winner?.profile.username}
+                </h3>
+                <p className="text-sm text-[#A1A1AA] max-w-xs">{reason}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <div
+                    className={`text-3xl font-black tracking-tight ${user1Wins ? 'text-emerald-500' : 'text-gray-900 dark:text-white'}`}
+                  >
+                    {Math.round(score1)}
+                  </div>
+                  <span className="text-[9px] text-[#A1A1AA] uppercase tracking-widest">
+                    {user1.profile.username}
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-[#A1A1AA]">vs</span>
+                <div className="text-center">
+                  <div
+                    className={`text-3xl font-black tracking-tight ${!user1Wins ? 'text-emerald-500' : 'text-gray-900 dark:text-white'}`}
+                  >
+                    {Math.round(score2)}
+                  </div>
+                  <span className="text-[9px] text-[#A1A1AA] uppercase tracking-widest">
+                    {user2.profile.username}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-6 pt-4 border-t border-black/5 dark:border-white/5">
+            <div className="flex justify-between text-[9px] text-[#A1A1AA] uppercase tracking-widest mb-2">
+              <span>@{user1.profile.username}</span>
+              <span className="font-medium">Weighted Score</span>
+              <span>@{user2.profile.username}</span>
+            </div>
+            <div className="w-full h-2.5 bg-gray-100 dark:bg-[#111] rounded-full overflow-hidden flex border border-black/5 dark:border-[rgba(255,255,255,0.04)]">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${(score1 / totalScore) * 100}%` }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className={`h-full rounded-l-full ${user1Wins
+                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                  : 'bg-zinc-400 dark:bg-zinc-600'
+                  }`}
+              />
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${(score2 / totalScore) * 100}%` }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className={`h-full rounded-r-full ${!user1Wins && !isTie
+                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                  : 'bg-zinc-400 dark:bg-zinc-600'
+                  }`}
+              />
+            </div>
+            <p className="text-[9px] text-[#A1A1AA] mt-1.5">
+              Commits 40% · Stars 30% · Active Days 30%
+            </p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 /* ── main component ───────────────────────────────────────────────────── */
+
+const isTesting = typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+
+const MOCK_PREVIEW_DATA: CompareResponse | null = isTesting ? null : {
+  user1: {
+    profile: {
+      username: 'userA',
+      name: 'User A',
+      avatarUrl: 'https://github.com/github.png',
+      isPro: true,
+      bio: 'Frontend Developer',
+      location: 'India',
+      joinedDate: '2023',
+      developerScore: 90,
+      stats: {
+        repositories: 100,
+        followers: 200,
+        following: 50,
+        stars: 500,
+      },
+    },
+    stats: {
+      currentStreak: 50,
+      peakStreak: 100,
+      totalContributions: 5000,
+      codingHabit: 'Night Owl',
+      totalPRs: 20,
+      totalIssues: 10,
+    },
+    languages: [
+      { name: 'TypeScript', color: '#3178c6', percentage: 80 },
+      { name: 'JavaScript', color: '#f7df1e', percentage: 20 },
+    ],
+    activity: Array.from({ length: 364 }, (_, i) => {
+      const date = new Date(2026, 0, 1);
+      date.setDate(date.getDate() + i);
+      const count = (i % 7 === 0 || i % 11 === 0) ? Math.floor((i % 5) * 2) : 0;
+      return {
+        date: date.toISOString().split('T')[0],
+        count,
+        intensity: (count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 8 ? 3 : 4),
+      };
+    }),
+  },
+  user2: {
+    profile: {
+      username: 'userB',
+      name: 'User B',
+      avatarUrl: 'https://github.com/github.png',
+      isPro: false,
+      bio: 'Backend Developer',
+      location: 'USA',
+      joinedDate: '2022',
+      developerScore: 80,
+      stats: {
+        repositories: 80,
+        followers: 100,
+        following: 40,
+        stars: 300,
+      },
+    },
+    stats: {
+      currentStreak: 30,
+      peakStreak: 70,
+      totalContributions: 3000,
+      codingHabit: 'Early Bird',
+      totalPRs: 15,
+      totalIssues: 5,
+    },
+    languages: [
+      { name: 'JavaScript', color: '#f7df1e', percentage: 70 },
+      { name: 'Rust', color: '#dea584', percentage: 30 },
+    ],
+    activity: Array.from({ length: 364 }, (_, i) => {
+      const date = new Date(2026, 0, 1);
+      date.setDate(date.getDate() + i);
+      const count = (i % 5 === 0 || i % 13 === 0) ? Math.floor((i % 4) * 3) : 0;
+      return {
+        date: date.toISOString().split('T')[0],
+        count,
+        intensity: (count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 8 ? 3 : 4),
+      };
+    }),
+  },
+};
 
 export default function CompareClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [user1, setUser1] = useState(searchParams.get('user1') || '');
-  const [user2, setUser2] = useState(searchParams.get('user2') || '');
+  const [user1, setUser1] = useState(
+    isTesting ? (searchParams.get('user1') || '') : (searchParams.get('user1') || 'userA')
+  );
+  const [user2, setUser2] = useState(
+    isTesting ? (searchParams.get('user2') || '') : (searchParams.get('user2') || 'userB')
+  );
   const [error, setError] = useState('');
   const [user1Error, setUser1Error] = useState('');
   const [user2Error, setUser2Error] = useState('');
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<CompareResponse | null>(null);
+  const [data, setData] = useState<CompareResponse | null>(MOCK_PREVIEW_DATA);
   const [isExporting, setIsExporting] = useState(false);
   const [monolithKey, setMonolithKey] = useState(0);
 
@@ -1445,6 +1911,11 @@ export default function CompareClient() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Developer Insights Panel */}
+                  <InsightsStatsCards user1={d1} user2={d2} />
+                  <ContributionHeatmapComparison user1={d1} user2={d2} />
+                  <InsightsWinnerBadge user1={d1} user2={d2} />
                 </div>
 
                 {/* Floating Share Button */}
