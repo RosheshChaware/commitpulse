@@ -744,7 +744,7 @@ async function fetchContributionsUncached(
   }
   // 1. Fabricate the LOC additions and deletions fields with strict lint-compliant object mappings
   const processedWeeks = (calendar.weeks || []).map((week: unknown) => {
-    const rawWeek = week as any;
+    const rawWeek = week as unknown as Record<string, unknown>;
     const contributionDays = Array.isArray(rawWeek.contributionDays)
       ? rawWeek.contributionDays
       : [];
@@ -752,7 +752,7 @@ async function fetchContributionsUncached(
     return {
       ...rawWeek,
       contributionDays: contributionDays.map((day: unknown) => {
-        const rawDay = day as any;
+        const rawDay = day as unknown as Record<string, unknown>;
         const count = typeof rawDay.contributionCount === 'number' ? rawDay.contributionCount : 0;
 
         if (count === 0) {
