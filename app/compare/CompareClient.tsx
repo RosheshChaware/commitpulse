@@ -231,8 +231,9 @@ function StatBattle({
       <div className="flex justify-between items-end mb-3">
         <div className="text-left">
           <span
-            className={`text-2xl font-bold tracking-tight ${winnerA ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
-              }`}
+            className={`text-2xl font-bold tracking-tight ${
+              winnerA ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
+            }`}
           >
             {valueA.toLocaleString()}
           </span>
@@ -249,8 +250,9 @@ function StatBattle({
             </span>
           )}
           <span
-            className={`text-2xl font-bold tracking-tight ${winnerB ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
-              }`}
+            className={`text-2xl font-bold tracking-tight ${
+              winnerB ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'
+            }`}
           >
             {valueB.toLocaleString()}
           </span>
@@ -261,19 +263,21 @@ function StatBattle({
           initial={{ width: 0 }}
           animate={{ width: `${pctA}%` }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className={`h-full rounded-l-full ${winnerA
-            ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
-            : 'bg-zinc-400 dark:bg-zinc-600'
-            }`}
+          className={`h-full rounded-l-full ${
+            winnerA
+              ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+              : 'bg-zinc-400 dark:bg-zinc-600'
+          }`}
         />
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${100 - pctA}%` }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className={`h-full rounded-r-full ${winnerB
-            ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
-            : 'bg-zinc-400 dark:bg-zinc-600'
-            }`}
+          className={`h-full rounded-r-full ${
+            winnerB
+              ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+              : 'bg-zinc-400 dark:bg-zinc-600'
+          }`}
         />
       </div>
     </motion.div>
@@ -974,13 +978,7 @@ function getTotalForks(userData: CompareUserData): number {
 
 /* ── helper: insights stats cards ─────────────────────────────────────── */
 
-function InsightsStatsCards({
-  user1,
-  user2,
-}: {
-  user1: CompareUserData;
-  user2: CompareUserData;
-}) {
+function InsightsStatsCards({ user1, user2 }: { user1: CompareUserData; user2: CompareUserData }) {
   const forks1 = getTotalForks(user1);
   const forks2 = getTotalForks(user2);
   const activeDays1 = getActiveDays(user1.activity);
@@ -994,42 +992,42 @@ function InsightsStatsCards({
     isText?: boolean;
     suffix?: string;
   }[] = [
-      {
-        label: 'Total Commits',
-        icon: GitCommit,
-        a: user1.stats.totalContributions,
-        b: user2.stats.totalContributions,
-        suffix: ' commits',
-      },
-      {
-        label: 'Stars Earned',
-        icon: Star,
-        a: user1.profile.stats.stars,
-        b: user2.profile.stats.stars,
-        suffix: ' stars',
-      },
-      {
-        label: 'Forks',
-        icon: GitBranch,
-        a: forks1,
-        b: forks2,
-        suffix: ' forks',
-      },
-      {
-        label: 'Top Language',
-        icon: Code2,
-        a: user1.languages[0]?.name || 'N/A',
-        b: user2.languages[0]?.name || 'N/A',
-        isText: true,
-      },
-      {
-        label: 'Active Days',
-        icon: Calendar,
-        a: activeDays1,
-        b: activeDays2,
-        suffix: ' days',
-      },
-    ];
+    {
+      label: 'Total Commits',
+      icon: GitCommit,
+      a: user1.stats.totalContributions,
+      b: user2.stats.totalContributions,
+      suffix: ' commits',
+    },
+    {
+      label: 'Stars Earned',
+      icon: Star,
+      a: user1.profile.stats.stars,
+      b: user2.profile.stats.stars,
+      suffix: ' stars',
+    },
+    {
+      label: 'Forks',
+      icon: GitBranch,
+      a: forks1,
+      b: forks2,
+      suffix: ' forks',
+    },
+    {
+      label: 'Top Language',
+      icon: Code2,
+      a: user1.languages[0]?.name || 'N/A',
+      b: user2.languages[0]?.name || 'N/A',
+      isText: true,
+    },
+    {
+      label: 'Active Days',
+      icon: Calendar,
+      a: activeDays1,
+      b: activeDays2,
+      suffix: ' days',
+    },
+  ];
 
   return (
     <motion.div
@@ -1067,10 +1065,10 @@ function InsightsStatsCards({
                   <span
                     className={`text-sm font-bold ${winA ? 'text-emerald-500' : 'text-gray-900 dark:text-white'}`}
                   >
-                    {card.isText ? card.a : `${(card.a as number).toLocaleString()}${card.suffix || ''}`}
-                    {winA && (
-                      <span className="ml-1 text-[8px] text-emerald-400">★</span>
-                    )}
+                    {card.isText
+                      ? card.a
+                      : `${(card.a as number).toLocaleString()}${card.suffix || ''}`}
+                    {winA && <span className="ml-1 text-[8px] text-emerald-400">★</span>}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -1080,10 +1078,10 @@ function InsightsStatsCards({
                   <span
                     className={`text-sm font-bold ${winB ? 'text-emerald-500' : 'text-gray-900 dark:text-white'}`}
                   >
-                    {card.isText ? card.b : `${(card.b as number).toLocaleString()}${card.suffix || ''}`}
-                    {winB && (
-                      <span className="ml-1 text-[8px] text-emerald-400">★</span>
-                    )}
+                    {card.isText
+                      ? card.b
+                      : `${(card.b as number).toLocaleString()}${card.suffix || ''}`}
+                    {winB && <span className="ml-1 text-[8px] text-emerald-400">★</span>}
                   </span>
                 </div>
               </div>
@@ -1165,10 +1163,7 @@ function ContributionHeatmapComparison({
               <div className="flex items-center gap-1.5 mt-3 justify-end">
                 <span className="text-[9px] text-[#A1A1AA]">Less</span>
                 {HEATMAP_INTENSITY.map((color, i) => (
-                  <div
-                    key={i}
-                    className={`w-[10px] h-[10px] rounded-[2px] ${color}`}
-                  />
+                  <div key={i} className={`w-[10px] h-[10px] rounded-[2px] ${color}`} />
                 ))}
                 <span className="text-[9px] text-[#A1A1AA]">More</span>
               </div>
@@ -1182,13 +1177,7 @@ function ContributionHeatmapComparison({
 
 /* ── helper: insights winner badge ────────────────────────────────────── */
 
-function InsightsWinnerBadge({
-  user1,
-  user2,
-}: {
-  user1: CompareUserData;
-  user2: CompareUserData;
-}) {
+function InsightsWinnerBadge({ user1, user2 }: { user1: CompareUserData; user2: CompareUserData }) {
   const days1 = getActiveDays(user1.activity);
   const days2 = getActiveDays(user2.activity);
 
@@ -1307,19 +1296,21 @@ function InsightsWinnerBadge({
                 initial={{ width: 0 }}
                 animate={{ width: `${(score1 / totalScore) * 100}%` }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className={`h-full rounded-l-full ${user1Wins
-                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
-                  : 'bg-zinc-400 dark:bg-zinc-600'
-                  }`}
+                className={`h-full rounded-l-full ${
+                  user1Wins
+                    ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                    : 'bg-zinc-400 dark:bg-zinc-600'
+                }`}
               />
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${(score2 / totalScore) * 100}%` }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className={`h-full rounded-r-full ${!user1Wins && !isTie
-                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
-                  : 'bg-zinc-400 dark:bg-zinc-600'
-                  }`}
+                className={`h-full rounded-r-full ${
+                  !user1Wins && !isTie
+                    ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                    : 'bg-zinc-400 dark:bg-zinc-600'
+                }`}
               />
             </div>
             <p className="text-[9px] text-[#A1A1AA] mt-1.5">
@@ -1336,98 +1327,100 @@ function InsightsWinnerBadge({
 
 const isTesting = typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
 
-const MOCK_PREVIEW_DATA: CompareResponse | null = isTesting ? null : {
-  user1: {
-    profile: {
-      username: 'userA',
-      name: 'User A',
-      avatarUrl: 'https://github.com/github.png',
-      isPro: true,
-      bio: 'Frontend Developer',
-      location: 'India',
-      joinedDate: '2023',
-      developerScore: 90,
-      stats: {
-        repositories: 100,
-        followers: 200,
-        following: 50,
-        stars: 500,
+const MOCK_PREVIEW_DATA: CompareResponse | null = isTesting
+  ? null
+  : {
+      user1: {
+        profile: {
+          username: 'userA',
+          name: 'User A',
+          avatarUrl: 'https://github.com/github.png',
+          isPro: true,
+          bio: 'Frontend Developer',
+          location: 'India',
+          joinedDate: '2023',
+          developerScore: 90,
+          stats: {
+            repositories: 100,
+            followers: 200,
+            following: 50,
+            stars: 500,
+          },
+        },
+        stats: {
+          currentStreak: 50,
+          peakStreak: 100,
+          totalContributions: 5000,
+          codingHabit: 'Night Owl',
+          totalPRs: 20,
+          totalIssues: 10,
+        },
+        languages: [
+          { name: 'TypeScript', color: '#3178c6', percentage: 80 },
+          { name: 'JavaScript', color: '#f7df1e', percentage: 20 },
+        ],
+        activity: Array.from({ length: 364 }, (_, i) => {
+          const date = new Date(2026, 0, 1);
+          date.setDate(date.getDate() + i);
+          const count = i % 7 === 0 || i % 11 === 0 ? Math.floor((i % 5) * 2) : 0;
+          return {
+            date: date.toISOString().split('T')[0],
+            count,
+            intensity: count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 8 ? 3 : 4,
+          };
+        }),
       },
-    },
-    stats: {
-      currentStreak: 50,
-      peakStreak: 100,
-      totalContributions: 5000,
-      codingHabit: 'Night Owl',
-      totalPRs: 20,
-      totalIssues: 10,
-    },
-    languages: [
-      { name: 'TypeScript', color: '#3178c6', percentage: 80 },
-      { name: 'JavaScript', color: '#f7df1e', percentage: 20 },
-    ],
-    activity: Array.from({ length: 364 }, (_, i) => {
-      const date = new Date(2026, 0, 1);
-      date.setDate(date.getDate() + i);
-      const count = (i % 7 === 0 || i % 11 === 0) ? Math.floor((i % 5) * 2) : 0;
-      return {
-        date: date.toISOString().split('T')[0],
-        count,
-        intensity: (count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 8 ? 3 : 4),
-      };
-    }),
-  },
-  user2: {
-    profile: {
-      username: 'userB',
-      name: 'User B',
-      avatarUrl: 'https://github.com/github.png',
-      isPro: false,
-      bio: 'Backend Developer',
-      location: 'USA',
-      joinedDate: '2022',
-      developerScore: 80,
-      stats: {
-        repositories: 80,
-        followers: 100,
-        following: 40,
-        stars: 300,
+      user2: {
+        profile: {
+          username: 'userB',
+          name: 'User B',
+          avatarUrl: 'https://github.com/github.png',
+          isPro: false,
+          bio: 'Backend Developer',
+          location: 'USA',
+          joinedDate: '2022',
+          developerScore: 80,
+          stats: {
+            repositories: 80,
+            followers: 100,
+            following: 40,
+            stars: 300,
+          },
+        },
+        stats: {
+          currentStreak: 30,
+          peakStreak: 70,
+          totalContributions: 3000,
+          codingHabit: 'Early Bird',
+          totalPRs: 15,
+          totalIssues: 5,
+        },
+        languages: [
+          { name: 'JavaScript', color: '#f7df1e', percentage: 70 },
+          { name: 'Rust', color: '#dea584', percentage: 30 },
+        ],
+        activity: Array.from({ length: 364 }, (_, i) => {
+          const date = new Date(2026, 0, 1);
+          date.setDate(date.getDate() + i);
+          const count = i % 5 === 0 || i % 13 === 0 ? Math.floor((i % 4) * 3) : 0;
+          return {
+            date: date.toISOString().split('T')[0],
+            count,
+            intensity: count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 8 ? 3 : 4,
+          };
+        }),
       },
-    },
-    stats: {
-      currentStreak: 30,
-      peakStreak: 70,
-      totalContributions: 3000,
-      codingHabit: 'Early Bird',
-      totalPRs: 15,
-      totalIssues: 5,
-    },
-    languages: [
-      { name: 'JavaScript', color: '#f7df1e', percentage: 70 },
-      { name: 'Rust', color: '#dea584', percentage: 30 },
-    ],
-    activity: Array.from({ length: 364 }, (_, i) => {
-      const date = new Date(2026, 0, 1);
-      date.setDate(date.getDate() + i);
-      const count = (i % 5 === 0 || i % 13 === 0) ? Math.floor((i % 4) * 3) : 0;
-      return {
-        date: date.toISOString().split('T')[0],
-        count,
-        intensity: (count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 8 ? 3 : 4),
-      };
-    }),
-  },
-};
+    };
 
 export default function CompareClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const [user1, setUser1] = useState(
-    isTesting ? (searchParams.get('user1') || '') : (searchParams.get('user1') || 'userA')
+    isTesting ? searchParams.get('user1') || '' : searchParams.get('user1') || 'userA'
   );
   const [user2, setUser2] = useState(
-    isTesting ? (searchParams.get('user2') || '') : (searchParams.get('user2') || 'userB')
+    isTesting ? searchParams.get('user2') || '' : searchParams.get('user2') || 'userB'
   );
   const [error, setError] = useState('');
   const [user1Error, setUser1Error] = useState('');
@@ -1556,7 +1549,7 @@ export default function CompareClient() {
           `/api/compare?user1=${encodeURIComponent(trimmedUser1)}&user2=${encodeURIComponent(trimmedUser2)}`
         );
 
-        const json = await res.json();
+        const json = (await res.json()) as { error?: string };
 
         if (!res.ok) {
           setError(json.error || 'Failed to fetch comparison data.');
@@ -1586,8 +1579,7 @@ export default function CompareClient() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       handleCompare(u1, u2);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams, handleCompare]);
 
   const d1 = data?.user1;
   const d2 = data?.user2;

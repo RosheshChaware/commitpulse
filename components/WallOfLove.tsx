@@ -284,7 +284,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
         {/* Header: Avatar + Name + Handle */}
         <div className="relative z-10 flex items-start gap-3.5 mb-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {}
           <img
             src={testimonial.avatar}
             alt={testimonial.name}

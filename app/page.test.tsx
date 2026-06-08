@@ -1,4 +1,4 @@
-import { HTMLMotionProps } from "framer-motion";
+import { HTMLMotionProps } from 'framer-motion';
 import type { HTMLAttributes, AnchorHTMLAttributes, ReactNode, ImgHTMLAttributes } from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -34,7 +34,7 @@ vi.mock('@/components/DiscordButton', () => ({
 // rendered inline. The mock below keeps the import from erroring if any
 // other test file still imports it.
 vi.mock('next/image', () => ({
-  // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+  // eslint-disable-next-line jsx-a11y/alt-text
   default: ({ fill: _fill, ...rest }: MockImageProps) => <img {...rest} />,
 }));
 
@@ -177,7 +177,6 @@ vi.mock('framer-motion', () => ({
       transition: _tr,
       ...props
     }: MotionImgProps) => (
-      // eslint-disable-next-line @next/next/no-img-element
       <img className={className} src={src} alt={alt} onLoad={onLoad} onError={onError} {...props} />
     ),
   },
@@ -505,7 +504,7 @@ describe('LandingPage', () => {
   });
 
   it('shows shimmer skeleton on stat cards while user details are loading', async () => {
-    vi.spyOn(global, 'fetch').mockImplementation(() => new Promise(() => { }));
+    vi.spyOn(global, 'fetch').mockImplementation(() => new Promise(() => {}));
 
     render(<LandingPage />);
     const input = screen.getByPlaceholderText('Enter GitHub Username') as HTMLInputElement;
