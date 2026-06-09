@@ -13,8 +13,8 @@ describe('ResumeUpload Theme Contrast', () => {
 
     const title = screen.getByText(/drop your resume here or click to browse/i);
 
-    expect(title.className).toContain('text-gray-700');
-    expect(title.className).toContain('dark:text-white/80');
+    expect(title).toHaveClass('text-gray-700');
+    expect(title).toHaveClass('dark:text-white/80');
   });
 
   it('renders helper text with light and dark contrast styles', () => {
@@ -22,8 +22,8 @@ describe('ResumeUpload Theme Contrast', () => {
 
     const helper = screen.getByText(/pdf or docx/i);
 
-    expect(helper.className).toContain('text-gray-500');
-    expect(helper.className).toContain('dark:text-white/50');
+    expect(helper).toHaveClass('text-gray-500');
+    expect(helper).toHaveClass('dark:text-white/50');
   });
 
   it('applies dark and light border styles to upload container', () => {
@@ -31,8 +31,10 @@ describe('ResumeUpload Theme Contrast', () => {
 
     const dropzone = container.querySelector('.border-dashed');
 
-    expect(dropzone?.className).toContain('border-black/10');
-    expect(dropzone?.className).toContain('dark:border-[rgba(255,255,255,0.15)]');
+    expect(dropzone).not.toBeNull();
+
+    expect(dropzone).toHaveClass('border-black/10');
+    expect(dropzone).toHaveClass('dark:border-[rgba(255,255,255,0.15)]');
   });
 
   it('applies dark mode hover background styling', () => {
@@ -40,8 +42,10 @@ describe('ResumeUpload Theme Contrast', () => {
 
     const dropzone = container.querySelector('.border-dashed');
 
-    expect(dropzone?.className).toContain('hover:bg-gray-50');
-    expect(dropzone?.className).toContain('dark:hover:bg-white/5');
+    expect(dropzone).not.toBeNull();
+
+    expect(dropzone).toHaveClass('hover:bg-gray-50');
+    expect(dropzone).toHaveClass('dark:hover:bg-white/5');
   });
 
   it('provides accessible file upload control with theme-safe styling', () => {
