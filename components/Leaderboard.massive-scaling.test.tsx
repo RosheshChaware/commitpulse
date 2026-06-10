@@ -85,7 +85,7 @@ describe('Leaderboard - Massive Scaling & High Bounds (Issue #2754 Equivalent)',
 
     // Performance bounds check (bumped to 15000ms to account for slower CI runners)
     expect(end - start).toBeLessThan(15000);
-  });
+  }, 15000);
 
   it('Extreme High Contribution Metric Bounds: safely renders millions of commits without integer layout overflow', () => {
     const highMetricData: Contributor[] = [
