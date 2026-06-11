@@ -30,6 +30,7 @@ import ResumeProfileSection from './ResumeProfileSection';
 import type { DashboardPeriod } from '@/utils/dashboardPeriod';
 import { PopularRepos } from './PopularPinnnedRepos';
 import PRInsightsClient from './PRInsights/PRInsightsClient';
+import CIAnalyticsClient from './CIAnalytics/CIAnalyticsClient';
 
 // Define the dashboard data structure
 export interface DashboardData {
@@ -329,7 +330,9 @@ export default function DashboardClient({
     () => true
   );
   const [secondUserData, setSecondUserData] = useState<DashboardData | null>(compareData);
-  const [activeTab, setActiveTab] = useState<'overview' | 'pr-insights'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'pr-insights' | 'ci-analytics'>(
+    'overview'
+  );
   const [isCompareMode, setIsCompareMode] = useState(Boolean(compareData));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOptimizerOpen, setIsOptimizerOpen] = useState(false);
@@ -647,6 +650,12 @@ export default function DashboardClient({
       <div className="flex justify-center mb-8">
         <div className="bg-white/50 dark:bg-zinc-900/50 p-1.5 rounded-2xl flex gap-2 w-fit border border-black/10 dark:border-white/10 shadow-sm backdrop-blur-sm">
           <button
+            onClick={() => setActiveTab('ci-analytics')}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'ci-analytics' ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+          >
+            CI Analytics
+          </button>
+          <button
             onClick={() => setActiveTab('overview')}
             className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'overview' ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
@@ -661,7 +670,9 @@ export default function DashboardClient({
         </div>
       </div>
 
-      {activeTab === 'pr-insights' ? (
+      {activeTab === 'ci-analytics' ? (
+        <CIAnalyticsClient username={username} />
+      ) : activeTab === 'pr-insights' ? (
         <PRInsightsClient username={username} />
       ) : !isCompareMode || !secondUserData || !coderProfileB ? (
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_320px] gap-6 lg:gap-8">
