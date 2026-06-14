@@ -39,6 +39,22 @@ function escapeSVGText(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+function buildInlineErrorSVG(text: string): string {
+  const MAX_LINE = 48;
+  const truncated = text.length > MAX_LINE * 2 ? text.slice(0, MAX_LINE * 2 - 1) + '…' : text;
+  const line1 = escapeSVGText(truncated.slice(0, MAX_LINE));
+  const line2 = truncated.length > MAX_LINE ? escapeSVGText(truncated.slice(MAX_LINE)) : null;
+  const textY = line2 ? '62' : '75';
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="150" viewBox="0 0 400 150">
+  <rect width="400" height="150" fill="#2d0000" rx="8"/>
+  <text x="200" y="${textY}" text-anchor="middle" dominant-baseline="central" fill="#ffcccc" font-family="sans-serif" font-size="13">${line1}</text>${
+    line2
+      ? `\n    <text x="200" y="91" text-anchor="middle" dominant-baseline="central" fill="#ffcccc" font-family="sans-serif" font-size="13">${line2}</text>`
+      : ''
+  }
+  </svg>`;
+}
+
 function getMonthlyReferenceDate(year: string | undefined, timezone: string): Date | undefined {
   if (!year) return undefined;
 
@@ -58,19 +74,19 @@ export async function GET(request: Request) {
     if (!parseResult.success) {
       const fieldErrors = parseResult.error.flatten();
 
-      return NextResponse.json(
-        {
-          error: 'Invalid parameters',
-          details: fieldErrors,
+      const firstError =
+        Object.values(fieldErrors.fieldErrors).flat()[0] ??
+        fieldErrors.formErrors[0] ??
+        'Invalid parameters';
+      const errorSvg = buildInlineErrorSVG(firstError);
+      return new NextResponse(errorSvg, {
+        status: 400,
+        headers: {
+          'Content-Type': 'image/svg+xml',
+          'Cache-Control': 'no-store',
+          'Content-Security-Policy': SVG_CSP_HEADER,
         },
-        {
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-store',
-          },
-        }
-      );
+      });
     }
 
     const {
