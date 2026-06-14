@@ -585,11 +585,18 @@ export async function GET(request: Request) {
     const frontendCount = languageNames.filter((l) => FRONTEND_LANGUAGES.has(l)).length;
     const backendCount = languageNames.filter((l) => BACKEND_LANGUAGES.has(l)).length;
 
-    const aiRepoCount = languageNames.filter((l) =>
-      AI_KEYWORDS.some((kw) => l.toLowerCase().includes(kw))
+    const popularRepos = (dashboardData.popularRepos ?? []) as Array<{
+      name: string;
+      description: string | null;
+      stargazerCount: number;
+    }>;
+    const aiRepoCount = popularRepos.filter((repo) =>
+      AI_KEYWORDS.some(
+        (kw) =>
+          repo.name.toLowerCase().includes(kw) ||
+          (repo.description && repo.description.toLowerCase().includes(kw))
+      )
     ).length;
-
-    const popularRepos = (dashboardData.popularRepos ?? []) as Array<{ stargazerCount: number }>;
     let topStarDensity = 0;
     for (const repo of popularRepos) {
       const density = repo.stargazerCount / 6;
