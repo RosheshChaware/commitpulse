@@ -170,6 +170,7 @@ export interface ExtendedContributionData {
   repoContributions: RepoContribution[];
   totalPRs?: number;
   totalIssues?: number;
+  totalReviews?: number;
   isOfflineFallback?: boolean;
 }
 

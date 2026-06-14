@@ -619,7 +619,7 @@ export async function GET(request: Request) {
       'pr-rookie': stats.totalPRs,
       'pr-master': stats.totalPRs,
       'merge-master': stats.totalPRs,
-      'review-expert': Math.min(stats.totalPRs, Math.round(stats.totalPRs * 0.3)),
+      'review-expert': stats.totalReviews,
       'pr-legend': stats.totalPRs,
       'star-collector': totalStars,
       'repository-creator': totalRepos,
