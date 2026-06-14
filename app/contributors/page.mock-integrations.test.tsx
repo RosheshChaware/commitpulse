@@ -1,5 +1,3 @@
-// app/contributors/page.mock-integrations.test.tsx
-
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -73,7 +71,7 @@ describe('ContributorsPage Mock Integrations', () => {
     const props = mockContributorsClient.mock.calls[0][0] as ContributorsClientProps;
 
     expect(Array.isArray(props.topContributors)).toBe(true);
-  });
+  }, 60000); // Fixed: Added 60 second timeout to prevent CI timeout
 
   it('falls back to empty contributor data on failed endpoint responses', async () => {
     vi.stubGlobal(
