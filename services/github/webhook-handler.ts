@@ -125,9 +125,9 @@ export function parseWebhookEvent(payload: WebhookPayload): CIEvent | null {
   return event;
 }
 
-export function cacheEvent(event: CIEvent): void {
+export async function cacheEvent(event: CIEvent): Promise<void> {
   const cacheKey = `${event.repository}:${event.timestamp}:${event.details.id || ''}`;
-  eventCache.set(cacheKey, event, 3600);
+  await eventCache.set(cacheKey, event, 3600 * 1000);
 }
 
 export async function evaluateAlerts(event: CIEvent): Promise<void> {
@@ -259,9 +259,9 @@ export function generateCIReport(
   };
 }
 
-export function setAlertConfig(repository: string, config: Partial<AlertConfig>): void {
+export async function setAlertConfig(repository: string, config: Partial<AlertConfig>): Promise<void> {
   const alertKey = `alert:${repository}`;
-  const existing = alertCache.get(alertKey) || { enabled: true };
-  const merged = { ...existing, ...config };
-  alertCache.set(alertKey, merged as AlertConfig, 86400);
+  const existing = (await alertCache.get(alertKey)) ?? ({ enabled: true } as AlertConfig);
+  const merged: AlertConfig = { ...existing, ...config } as AlertConfig;
+  await alertCache.set(alertKey, merged, 86400 * 1000);
 }
