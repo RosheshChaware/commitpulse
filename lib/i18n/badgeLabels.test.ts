@@ -20,15 +20,15 @@ describe('getLabels', () => {
     it('returns Hindi labels for hi', () => {
       const labels = getLabels('hi');
       expect(labels.CURRENT_STREAK).toBe('वर्तमान स्ट्रीक');
-      expect(labels.ANNUAL_SYNC_TOTAL).toBe('वार्षिक_कुल');
-      expect(labels.PEAK_STREAK).toBe('अधिकतम_स्ट्रीक');
+      expect(labels.ANNUAL_SYNC_TOTAL).toBe('वार्षिक कुल');
+      expect(labels.PEAK_STREAK).toBe('अधिकतम स्ट्रीक');
     });
 
     it('returns French labels for fr', () => {
       const labels = getLabels('fr');
       expect(labels.CURRENT_STREAK).toBe('Série Actuelle');
-      expect(labels.ANNUAL_SYNC_TOTAL).toBe('TOTAL_ANNUEL');
-      expect(labels.PEAK_STREAK).toBe('SÉRIE_MAXIMALE');
+      expect(labels.ANNUAL_SYNC_TOTAL).toBe('Total Annuel');
+      expect(labels.PEAK_STREAK).toBe('Série Maximale');
     });
   });
 
@@ -53,9 +53,9 @@ describe('getLabels', () => {
     it('contains all required keys with defined string values', () => {
       const labels = getLabels('en');
 
-      expect(labels).toHaveProperty('Current Streak');
-      expect(labels).toHaveProperty('Annual Total');
-      expect(labels).toHaveProperty('Peak Streak');
+      expect(labels).toHaveProperty('CURRENT_STREAK');
+      expect(labels).toHaveProperty('ANNUAL_SYNC_TOTAL');
+      expect(labels).toHaveProperty('PEAK_STREAK');
 
       expect(typeof labels.CURRENT_STREAK).toBe('string');
       expect(typeof labels.ANNUAL_SYNC_TOTAL).toBe('string');

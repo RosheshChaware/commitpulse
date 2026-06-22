@@ -11,8 +11,8 @@ const requiredKeys = [
 
 const expectedFrenchLabels = {
   CURRENT_STREAK: 'Série Actuelle',
-  ANNUAL_SYNC_TOTAL: 'TOTAL_ANNUEL',
-  PEAK_STREAK: 'SÉRIE_MAXIMALE',
+  ANNUAL_SYNC_TOTAL: 'Total Annuel',
+  PEAK_STREAK: 'Série Maximale',
   COMMITS_THIS_MONTH: 'Commits Ce Mois',
   VS_LAST_MONTH: 'vs mois dernier',
 };

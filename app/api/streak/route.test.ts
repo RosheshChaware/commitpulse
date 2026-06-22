@@ -1351,16 +1351,16 @@ describe('GET /api/streak', () => {
       const response = await GET(makeRequest({ user: 'octocat', lang: 'hi' }));
       const body = await response.text();
       expect(body).toContain('वर्तमान स्ट्रीक');
-      expect(body).toContain('वार्षिक_कुल');
-      expect(body).toContain('अधिकतम_स्ट्रीक');
+      expect(body).toContain('वार्षिक कुल');
+      expect(body).toContain('अधिकतम स्ट्रीक');
     });
 
     it('returns French translations when ?lang=fr is given', async () => {
       const response = await GET(makeRequest({ user: 'octocat', lang: 'fr' }));
       const body = await response.text();
       expect(body).toContain('Série Actuelle');
-      expect(body).toContain('TOTAL_ANNUEL');
-      expect(body).toContain('SÉRIE_MAXIMALE');
+      expect(body).toContain('Total Annuel');
+      expect(body).toContain('Série Maximale');
     });
 
     it('falls back to English when an unknown ?lang=xx is given', async () => {
