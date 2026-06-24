@@ -411,8 +411,7 @@
       "noActivity": "No activity recorded yet for this journey",
       "milestoneTitle": "Milestone Achieved",
       "viewMilestone": "View details",
-      "totalMilestones": "Total Milestones",
-      "explore": "Explore Timeline"
+      "totalMilestones": "Total Milestones"
     },
     "prInsights": {
       "showing_filtered": "Showing: {{label}} PRs — click again to reset",
