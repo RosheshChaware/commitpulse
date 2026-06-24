@@ -15,13 +15,16 @@ export class SyncQueue {
    */
   public enqueue(task: () => Promise<void>): void {
     if (process.env.NODE_ENV === 'test') {
-      // Bypass queue in test environments to preserve synchronous mock assertions
-      task().catch(() => {});
+      void task().catch((error) => {
+        console.error('[SyncQueue] Task failed during test:', error);
+
+        process.nextTick(() => {
+          throw error;
+        });
+      });
+
       return;
     }
-
-    this.queue.push(task);
-    this.processNext();
   }
 
   private async processNext(): Promise<void> {
