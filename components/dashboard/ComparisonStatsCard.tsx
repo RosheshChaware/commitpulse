@@ -11,7 +11,6 @@ import {
   Award,
   LucideIcon,
 } from 'lucide-react';
-import EmptyState from './EmptyState';
 
 const iconMap: Record<string, LucideIcon> = {
   Flame,
@@ -40,9 +39,7 @@ export default function ComparisonStatsCard({
   labelB,
   icon,
 }: ComparisonStatsCardProps) {
-  if (valueA === 0 && valueB === 0) {
-    return <EmptyState message={`No ${title.toLowerCase()} found to compare`} />;
-  }
+  const isEmptyComparison = valueA === 0 && valueB === 0;
   const IconComponent = iconMap[icon] || Award;
 
   const total = valueA + valueB;
@@ -154,7 +151,9 @@ export default function ComparisonStatsCard({
         aria-valuemax={100}
         className="w-full h-2 bg-gray-100 dark:bg-[#111] rounded-full overflow-hidden flex border border-black/5 dark:border-[rgba(255,255,255,0.04)]"
       >
-        {total > 0 ? (
+        {isEmptyComparison ? (
+          <div className="w-full h-full bg-zinc-300 dark:bg-zinc-800" />
+        ) : (
           <>
             <motion.div
               initial={{ width: 0 }}
@@ -177,8 +176,6 @@ export default function ComparisonStatsCard({
               }`}
             />
           </>
-        ) : (
-          <div className="w-full h-full bg-zinc-300 dark:bg-zinc-800" />
         )}
       </div>
     </motion.div>
