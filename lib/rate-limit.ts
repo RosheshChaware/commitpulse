@@ -376,7 +376,7 @@ export async function rateLimit(
   // ------------------------------------------------------------------
   if (url && token) {
     const windowSeconds = Math.floor(windowMs / 1000);
-    const result = await evalRateLimitScript(url, token, `ratelimit:${ip}`, limit, windowSeconds);
+    const result = await evalRateLimitScript(url, token, cacheKey, limit, windowSeconds);
 
     if (result !== null) {
       const [allowed, count, ttl] = result;
